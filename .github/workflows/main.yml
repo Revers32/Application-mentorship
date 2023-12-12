@@ -1,31 +1,23 @@
-name: Trigger GitLab CI
+name: Trigger GitLab Pipeline
 
 on:
   push:
     branches:
       - main
-  create:
-    branches:
       - '*'
 
 jobs:
-  trigger-gitlab-ci:
+  trigger-gitlab-pipeline:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Trigger GitLab CI
-        run: |
-          if [ "${{ github.event_name }}" = "push" ]; then
-            REF="main"
-          elif [ "${{ github.event_name }}" = "create" ]; then
-            REF="${{ github.event.ref }}"
-          else
-            echo "Unsupported event: ${{ github.event_name }}"
-            exit 1
-          fi
+    - name: Checkout Repository
+      uses: actions/checkout@v2
 
-          curl --request POST \
-            --header "PRIVATE-TOKEN: $GITLAB_CI_TOKEN" \
-            --url "https://gitlab.com/api/v4/projects/48639908/trigger/pipeline" \
-            --form "ref=${REF}" \
-            --form "token=$GITLAB_CI_TRIGGER_TOKEN"
+    - name: Trigger GitLab Pipeline
+      run: |
+        curl --request POST \
+          --url "https://gitlab.com/api/v4/projects/48639908/trigger/pipeline" \
+          --header "PRIVATE-TOKEN: ${GITLAB_CI_TOKEN}" \
+          --form "ref=${GITHUB_REF#refs/heads/}" \
+          --form "token=${GITLAB_CI_TRIGGER_TOKEN}"
