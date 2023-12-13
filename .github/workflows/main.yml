@@ -21,4 +21,4 @@ jobs:
           --header "PRIVATE-TOKEN: ${{ secrets.GITLAB_CI_TOKEN }}" \
           --form "ref=main" \
           --form "token=${{ secrets.GITLAB_CI_TRIGGER_TOKEN }}" \ 
-          --form "variable[GH_BRANCH_NAME]=${{ github.event.ref}}"
+          --form "variables[GH_BRANCH_NAME]=${{ github.event.ref}}"
