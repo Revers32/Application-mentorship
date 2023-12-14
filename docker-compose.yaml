@@ -1,8 +1,11 @@
 version: '3'
 services:
   myapp:
+    container_name: ${GH_BRANCH_NAME}
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - '80:3000'
+    environment:
+      - GH_BRANCH_NAME=${GH_BRANCH_NAME}
