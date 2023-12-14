@@ -16,11 +16,21 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
       
-    - name: Trigger GitLab Pipeline
-      run: |
-        curl --request POST \
-          --url "https://gitlab.com/api/v4/projects/48639908/trigger/pipeline" \
-          --header "PRIVATE-TOKEN: ${{ secrets.GITLAB_CI_TOKEN }}" \
-          --form "ref=main" \
-          --form "token=${{ secrets.GITLAB_CI_TRIGGER_TOKEN }}"
+    - name: GitLab Pipeline Trigger
+      uses: digital-blueprint/gitlab-pipeline-trigger-action@v1.0.6
+      with:
+        host: 'gitlab.com'
+        id: '48639908'
+        ref: 'main'
+        trigger_token: ${{ secrets.GITLAB_CI_TRIGGER_TOKEN }}
+        access_token: ${{ secrets.GITLAB_CI_TOKEN }}
+        variables: '{"GH_BRANCH_NAME":"${{ steps.extract_branch.outputs.branch }}"}'
+      
+#    - name: Trigger GitLab Pipeline
+#      run: |
+#        curl --request POST \
+#          --url "https://gitlab.com/api/v4/projects/48639908/trigger/pipeline" \
+#          --header "PRIVATE-TOKEN: ${{ secrets.GITLAB_CI_TOKEN }}" \
+#          --form "ref=main" \
+#          --form "token=${{ secrets.GITLAB_CI_TRIGGER_TOKEN }}"
 #          --form "variables[GH_BRANCH_NAME]=${{ steps.extract_branch.outputs.branch }}"
